@@ -1,6 +1,6 @@
 #include <cctype>
-#include <iostream>
-#include "Scanner.hpp"
+// #include <iostream>
+#include "./include/Scanner.hpp"
 
 
 
@@ -125,28 +125,28 @@ void Scanner::scanTokens(){
 
 }
 
-void Scanner::printToken(const Token& token){
-    switch (token.type) {
-        case TokenType::PLUS: std::cout << "+\n"; break;
-        case TokenType::MINUS: std::cout << "-\n"; break;
-        case TokenType::SLASH: std::cout << "/\n"; break;
-        case TokenType::STAR: std::cout << "*\n"; break;
-        case TokenType::LEFT_PAREN: std::cout << "(\n"; break;
-        case TokenType::RIGHT_PAREN: std::cout << ")\n"; break;
-        case TokenType::LEFT_BRACE: std::cout << "{\n"; break;
-        case TokenType::RIGHT_BRACE: std::cout << "}\n"; break;
-        case TokenType::SEMICOLON: std::cout << ";\n"; break;
-        case TokenType::END: std::cout<< "EOF\n"; break;
-        case TokenType::NUMBER: std::cout << "NUMBER(" << token.value << ")\n"; break;
-        case TokenType::IDENTIFIER: std::cout << "IDENTIFIER(" << token.value << ")\n"; break;
-        case TokenType::FOR: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::IF: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::VAR: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::AND: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::ELSE: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::FUN: std::cout << "KEYWORD(" << token.value <<")\n"; break;
-        case TokenType::PRINT: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+// void Scanner::printToken(const Token& token){
+//     switch (token.type) {
+//         case TokenType::PLUS: std::cout << "+\n"; break;
+//         case TokenType::MINUS: std::cout << "-\n"; break;
+//         case TokenType::SLASH: std::cout << "/\n"; break;
+//         case TokenType::STAR: std::cout << "*\n"; break;
+//         case TokenType::LEFT_PAREN: std::cout << "(\n"; break;
+//         case TokenType::RIGHT_PAREN: std::cout << ")\n"; break;
+//         case TokenType::LEFT_BRACE: std::cout << "{\n"; break;
+//         case TokenType::RIGHT_BRACE: std::cout << "}\n"; break;
+//         case TokenType::SEMICOLON: std::cout << ";\n"; break;
+//         case TokenType::END: std::cout<< "EOF\n"; break;
+//         case TokenType::NUMBER: std::cout << "NUMBER(" << token.value << ")\n"; break;
+//         case TokenType::IDENTIFIER: std::cout << "IDENTIFIER(" << token.value << ")\n"; break;
+//         case TokenType::FOR: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::IF: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::VAR: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::AND: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::ELSE: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::FUN: std::cout << "KEYWORD(" << token.value <<")\n"; break;
+//         case TokenType::PRINT: std::cout << "KEYWORD(" << token.value <<")\n"; break;
 
-    }
-}
+//     }
+// }
 

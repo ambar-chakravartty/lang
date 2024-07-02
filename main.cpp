@@ -2,6 +2,7 @@
 #include <string>
 
 #include "./include/Scanner.hpp"
+#include "./include/Parser.hpp"
 
 using std::string;
 
@@ -15,10 +16,18 @@ void repl(){
 
     scanner.scanTokens();
 
-    for(const Token& tok: scanner.tokens){
-      //scanner.printToken(tok);
-      std::cout << tok.value << "\n";
+    Parser p = Parser(scanner.tokens);
+
+    Program ast = p.parse();
+
+    for(Expr& e : ast.body){
+      p.printExpr(e);
     }
+    
+    // for(const Token& tok: scanner.tokens){
+    //   //scanner.printToken(tok);
+    //   std::cout << tok.value << "\n";
+    // }
     
    
   }
