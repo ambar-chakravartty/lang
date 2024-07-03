@@ -71,19 +71,13 @@ Expr Parser::literal(){
 void Parser::printExpr(Expr& e){
    switch (e.type) {
         case NodeType::NUM_LITERAL:
-            std::cout << "LITERAL(" << static_cast<NumericLiteral&>(e).value << ")\n";
+            std::cout << "numeric literal\n";
             break;
         case NodeType::STR_LITERAL:
-            std::cout << "LITERAL(" << static_cast<StringLiteral&>(e).value << ")\n";
-            break;        
+            std::cout << "string literal\n";
+            break;
         case NodeType::BINARY_EXP:
-            std::cout << "BINARY ( \n";
-            std::cout << "LEFT : ";
-            printExpr(static_cast<BinaryExpr&>(e).left);
-            std::cout << "\nRIGHT : ";
-            printExpr(static_cast<BinaryExpr&>(e).right);
-            std::cout << "\nOPERATOR : ";
-            std::cout << static_cast<BinaryExpr&>(e).op << "\n)";
-            break;           
+            std::cout << "binary expression\n";
+            break;
    }
 }
