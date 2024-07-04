@@ -10,12 +10,11 @@
 class Parser{
 public:
     std::vector<Token> tokens;
-    
     int current;
 
     Parser(std::vector<Token> tokenList);
     Program parse();
-    void printExpr(Expr& e);
+    // void printExpr(Expr& e);
 
 private:
     

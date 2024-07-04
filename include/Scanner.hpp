@@ -66,6 +66,7 @@ class Scanner{
     void identifier();
     bool match(const char& expected);
     void string();
+    char peekNext();
 
 };
 

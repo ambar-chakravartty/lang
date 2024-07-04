@@ -17,9 +17,13 @@ enum class NodeType{
 
 // };
 
-class Expr{
+class Expr {
 public:
     NodeType type;
+    // other members...
+
+    // Ensure there is a virtual destructor if using polymorphism
+    virtual ~Expr() = default;
 };
 
 class Program{
@@ -30,38 +34,33 @@ public:
     Program(std::vector<Expr> body) : body(body) {}
 };
 
-
-
-class BinaryExpr : public Expr{
+class NumericLiteral : public Expr {
 public:
-    NodeType type = NodeType::BINARY_EXP;
-    Expr left;
-    Expr right;
-    std::string op;
-
-    BinaryExpr(Expr left,std::string op,Expr right): left(left),op(op),right(right) {}
-};
-
-class Identifier : public Expr{
-public:
-    NodeType type = NodeType::IDENTIFIER;
-    std::string symbol;
-};
-
-class NumericLiteral : public Expr{
-public:
-    NodeType type = NodeType::NUM_LITERAL;
     float value;
 
-    NumericLiteral(float value) : value(value) {}
+    NumericLiteral(float value) : value(value) {
+        type = NodeType::NUM_LITERAL;
+    }
 };
 
-class StringLiteral : public Expr{
+class StringLiteral : public Expr {
 public:
-    NodeType type = NodeType::STR_LITERAL;
     std::string value;
 
-    StringLiteral(std::string value) : value(value) {}
+    StringLiteral(const std::string& value) : value(value) {
+        type = NodeType::STR_LITERAL;
+    }
 };
 
+class BinaryExpr : public Expr {
+public:
+    Expr left;
+    std::string op;
+    Expr right;
+
+    BinaryExpr(const Expr& left, const std::string& op, const Expr& right)
+        : left(left), op(op), right(right) {
+        type = NodeType::BINARY_EXP;
+    }
+};
 #endif 
