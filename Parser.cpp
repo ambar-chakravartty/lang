@@ -25,18 +25,18 @@ Token Parser::currToken() {
     return tokens.at(current);
 }
 
-Program Parser::parse() {
-    std::vector<Expr> expressions;
-    while (currToken().type != TokenType::END) {
-        expressions.push_back(expression());
-    }
-    return Program(expressions);
-}
-// Expr Parser::parse(){
-//     while(currToken().type != TokenType::END){
-//         return expression();
+// Program Parser::parse() {
+//     std::vector<Expr> expressions;
+//     while (currToken().type != TokenType::END) {
+//         expressions.push_back(expression());
 //     }
+//     return Program(expressions);
 // }
+Expr Parser::parse(){
+    while(currToken().type != TokenType::END){
+        return expression();
+    }
+}
 
 
 Expr Parser::expression() {

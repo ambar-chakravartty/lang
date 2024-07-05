@@ -13,7 +13,7 @@ public:
     int current;
 
     Parser(std::vector<Token> tokenList);
-    Program parse();
+    Expr parse();
     // void printExpr(Expr& e);
 
 private:
