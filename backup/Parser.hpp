@@ -5,7 +5,6 @@
 #include "ast.hpp"
 
 // #include <string>
-#include <memory>
 #include <vector>
 
 class Parser{
@@ -14,16 +13,16 @@ public:
     int current;
 
     Parser(std::vector<Token> tokenList);
-    std::unique_ptr<Expr> parse();
+    Expr parse();
     // void printExpr(Expr& e);
 
 private:
     
-    std::unique_ptr<Expr> expression();
-    std::unique_ptr<Expr> binary();
-    std::unique_ptr<Expr> term();
-    std::unique_ptr<Expr> factor();
-    std::unique_ptr<Expr> literal();
+    Expr expression();
+    Expr binary();
+    Expr term();
+    Expr factor();
+    Expr literal();
 
     Token eat();
     Token currToken();

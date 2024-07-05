@@ -1,8 +1,6 @@
 #include "include/Parser.hpp"
 #include "include/Scanner.hpp"
 #include "include/ast.hpp"
-#include <memory>
-#include <string>
 #include <vector>
 #include <iostream>
 #include <stdexcept>
@@ -34,54 +32,63 @@ Token Parser::currToken() {
 //     }
 //     return Program(expressions);
 // }
-std::unique_ptr<Expr> Parser::parse(){
+Expr Parser::parse(){
     while(currToken().type != TokenType::END){
         return expression();
     }
 }
 
 
-std::unique_ptr<Expr> Parser::expression() {
+Expr Parser::expression() {
+    std::cout << "expression\n";
     return term();
 }
 
-std::unique_ptr<Expr> Parser::term() {
-    auto left = factor();
+Expr Parser::term() {
+    std::cout << "term\n";
+    Expr left = factor();
     while (currToken().type == TokenType::STAR || currToken().type == TokenType::SLASH) {
         std::string op = eat().value;
-        auto right = factor();
-        left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
+        Expr right = factor();
+        left = BinaryExpr(left, op, right);
     }
     return left;
 }
 
-std::unique_ptr<Expr> Parser::factor() {
-    auto left = literal();
+Expr Parser::factor() {
+    std::cout << "factor\n";
+    Expr left = literal();
     while (currToken().type == TokenType::PLUS || currToken().type == TokenType::MINUS) {
         std::string op = eat().value;
-        auto right = literal();
-        left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
+        Expr right = literal();
+        left = BinaryExpr(left, op, right);
     }
     return left;
 }
 
-std::unique_ptr<Expr> Parser::literal() {
-   
-
+Expr Parser::literal() {
     std::cout << "literal\n";
     if (currToken().type == TokenType::STRING) {
-        auto s = std::make_unique<StringLiteral>("");
-        s->value = eat().value;
-        return s;
+        return StringLiteral(eat().value);
     } else if (currToken().type == TokenType::NUMBER) {
-        auto n = std::make_unique<NumericLiteral>(0);
-        n->value = std::stof(eat().value);
-        return n;
+        return NumericLiteral(std::stof(eat().value));
     } else {
         throw std::runtime_error("Unexpected token type in literal");
     }
-
-
 }
 
-
+// void printExpr(Expr& e) {
+//     switch (e.type) {
+//         case NodeType::NUM_LITERAL:
+//             std::cout << "numeric literal\n";
+//             break;
+//         case NodeType::STR_LITERAL:
+//             std::cout << "string literal\n";
+//             break;
+//         case NodeType::BINARY_EXP:
+//             std::cout << "binary expression\n";
+//             break;
+//         default:
+//             std::cerr << "Unknown expression type\n";
+//     }
+// }

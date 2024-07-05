@@ -1,6 +1,7 @@
 #ifndef AST_HPP
 #define AST_HPP
 
+#include <memory>
 #include <vector>
 #include <string>
 
@@ -54,13 +55,14 @@ public:
 
 class BinaryExpr : public Expr {
 public:
-    Expr left;
+    std::unique_ptr<Expr> left;
     std::string op;
-    Expr right;
+    std::unique_ptr<Expr> right;
 
-    BinaryExpr(const Expr& left, const std::string& op, const Expr& right)
-        : left(left), op(op), right(right) {
+    BinaryExpr(std::unique_ptr<Expr> left, const std::string& op, std::unique_ptr<Expr> right)
+        : left(std::move(left)), op(op), right(std::move(right)) {
         type = NodeType::BINARY_EXP;
     }
+
 };
 #endif 
