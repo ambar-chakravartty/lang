@@ -9,6 +9,8 @@
 
 void printType(std::unique_ptr<Expr>& root);
 void printType(Expr* e);
+auto exec(std::unique_ptr<Expr>& root);
+auto exec(Expr* root);
 
 void printNum(NumericLiteral* n){
     std::cout << n->value << "\n";
@@ -44,7 +46,6 @@ void printType(Expr* e){
 void printType(std::unique_ptr<Expr>& root){
     printType(root.get());
 }
-
 
 void repl(){
   while(1){

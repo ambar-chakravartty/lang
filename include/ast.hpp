@@ -11,12 +11,15 @@ enum class NodeType{
     STR_LITERAL,
     IDENTIFIER,
     BINARY_EXP,
+    NULL_LITERAL,
 };
 
 // struct Stmt{
 //     NodeType type;
 
 // };
+
+class Visitor;
 
 class Expr {
 public:
@@ -25,6 +28,7 @@ public:
 
     // Ensure there is a virtual destructor if using polymorphism
     virtual ~Expr() = default;
+    //virtual void accept(Visitor* visitor) = 0 ;
 };
 
 class Program{
@@ -33,6 +37,16 @@ public:
     std::vector<Expr> body;
 
     Program(std::vector<Expr> body) : body(body) {}
+};
+
+class NullLiteral : public Expr{
+    public:
+        std::string value;
+
+        NullLiteral(){
+            type = NodeType::NULL_LITERAL;
+            value = "null";
+        }
 };
 
 class NumericLiteral : public Expr {
@@ -64,5 +78,14 @@ public:
         type = NodeType::BINARY_EXP;
     }
 
+};
+
+class Visitor{
+    public:
+        virtual void visitNumericLiteral(NumericLiteral* node);
+        virtual void visitStringLiteral(StringLiteral* node);
+        virtual void visitBinaryExpression(BinaryExpr* node);
+
+        virtual ~Visitor() = default;
 };
 #endif 

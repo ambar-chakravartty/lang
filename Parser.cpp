@@ -77,6 +77,17 @@ std::unique_ptr<Expr> Parser::literal() {
         auto n = std::make_unique<NumericLiteral>(0);
         n->value = std::stof(eat().value);
         return n;
+    }else if(currToken().type == TokenType::LEFT_PAREN){
+
+        eat(); // consume the parentheses
+        
+        std::unique_ptr<Expr> e = expression();
+
+        if(currToken().type != TokenType::RIGHT_PAREN) std::cerr << "Missing ')' \n"; 
+
+        eat();
+        return e;
+
     } else {
         throw std::runtime_error("Unexpected token type in literal");
     }
