@@ -1,2 +1,2 @@
 all:
-	g++ -g main.cpp Scanner.cpp Parser.cpp -o ./debug/main
+	g++ -g main.cpp Scanner.cpp Parser.cpp interpreter.cpp -o ./debug/main

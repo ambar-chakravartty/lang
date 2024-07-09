@@ -14,7 +14,8 @@ public:
     int current;
 
     Parser(std::vector<Token> tokenList);
-    std::unique_ptr<Expr> parse();
+    void parse();
+    std::vector<std::unique_ptr<Expr>> program;
     // void printExpr(Expr& e);
 
 private:

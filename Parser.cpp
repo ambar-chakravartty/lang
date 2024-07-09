@@ -34,9 +34,9 @@ Token Parser::currToken() {
 //     }
 //     return Program(expressions);
 // }
-std::unique_ptr<Expr> Parser::parse(){
+void Parser::parse(){
     while(currToken().type != TokenType::END){
-        return expression();
+        program.push_back(expression());
     }
 }
 
@@ -67,9 +67,7 @@ std::unique_ptr<Expr> Parser::factor() {
 
 std::unique_ptr<Expr> Parser::literal() {
    
-
-    std::cout << "literal\n";
-    if (currToken().type == TokenType::STRING) {
+       if (currToken().type == TokenType::STRING) {
         auto s = std::make_unique<StringLiteral>("");
         s->value = eat().value;
         return s;
@@ -89,7 +87,7 @@ std::unique_ptr<Expr> Parser::literal() {
         return e;
 
     } else {
-        throw std::runtime_error("Unexpected token type in literal");
+        std::cerr << "unidentified character\n";
     }
 
 

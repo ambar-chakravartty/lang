@@ -1,11 +1,14 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "./include/Scanner.hpp"
 #include "./include/Parser.hpp"
-#include "include/ast.hpp"
+#include "./include/ast.hpp"
 
+#include "./include/interpreter.hpp"
+#include "include/Values.hpp"
 
 void printType(std::unique_ptr<Expr>& root);
 void printType(Expr* e);
@@ -59,9 +62,18 @@ void repl(){
 
     Parser p(scanner.tokens);
 
-    auto r = p.parse(); 
+    p.parse();
 
-    printType(r);
+    auto res = interpret(p.program);
+    
+    if(res->type == ValueType::NUMBER){
+        std::cout << static_cast<NumberVal*>(res.get())->value << "\n";
+    }else if(res->type == ValueType::STRVAL){
+        std::cout << static_cast<StringValue*>(res.get())->value << "\n";
+    }
+    //std::unique_ptr<RuntimeVal> result = interpret(p.program);
+
+    
    
   }
 }

@@ -1,4 +1,5 @@
 #include <cctype>
+#include <iostream>
 #include <stdexcept>
 #include "./include/Scanner.hpp"
 
@@ -85,7 +86,7 @@ void Scanner::scanToken() {
             } else if (std::isalpha(c)) {
                 identifier();
             } else {
-                throw std::runtime_error("Unexpected character");
+                std::cerr << "Unexpected character\n";
             }
     }
 }
