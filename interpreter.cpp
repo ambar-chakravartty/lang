@@ -1,6 +1,6 @@
 #include <memory>
 #include <string>
-
+#include <iostream>
 
 #include "include/interpreter.hpp"
 #include "include/Values.hpp"
@@ -46,10 +46,21 @@ std::unique_ptr<RuntimeVal> evaluate(Expr* node){
     }
 }
 
+void printStmt(std::unique_ptr<RuntimeVal> res){
+        if(res->type == ValueType::NUMBER){
+        std::cout << static_cast<NumberVal*>(res.get())->value << "\n";
+    }else if(res->type == ValueType::STRVAL){
+        std::cout << static_cast<StringValue*>(res.get())->value << "\n";
+    }
+}
+
 std::unique_ptr<RuntimeVal> evalStmt(Stmt* s){
     switch (s->type) {
         case NodeType::EXPR_STMT:
             return evaluate(static_cast<ExprStmt*>(s)->expr);
+        case NodeType::PRINT_STMT:
+            printStmt(evaluate(static_cast<PrintStmt*>(s)->expr));
+            return std::make_unique<NumberVal>(0);
         
     }
 }

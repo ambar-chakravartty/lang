@@ -76,28 +76,30 @@ std::unique_ptr<Stmt> Parser::exprStatement(){
 }
 
 std::unique_ptr<Expr> Parser::expression() {
-    return term();
+    return factor();
 }
 
-std::unique_ptr<Expr> Parser::term() {
-    auto left = factor();
-    while (currToken().type == TokenType::STAR || currToken().type == TokenType::SLASH) {
+std::unique_ptr<Expr> Parser::factor() {
+    auto left = term();
+    while (currToken().type == TokenType::PLUS || currToken().type == TokenType::MINUS) {
         std::string op = eat().value;
-        auto right = factor();
+        auto right = term();
         left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
     }
     return left;
 }
 
-std::unique_ptr<Expr> Parser::factor() {
+std::unique_ptr<Expr> Parser::term() {
     auto left = literal();
-    while (currToken().type == TokenType::PLUS || currToken().type == TokenType::MINUS) {
+    while (currToken().type == TokenType::STAR || currToken().type == TokenType::SLASH) {
         std::string op = eat().value;
         auto right = literal();
         left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
     }
     return left;
 }
+
+
 
 std::unique_ptr<Expr> Parser::literal() {
    

@@ -10,6 +10,14 @@
 #include "./include/interpreter.hpp"
 #include "include/Values.hpp"
 
+//TODO:
+//print statements -- done
+//variables (decl & assignments)
+//loops (while)
+//user defined functions
+//user defined types
+//basic standard library
+
 void printType(std::unique_ptr<Expr>& root);
 void printType(Expr* e);
 auto exec(std::unique_ptr<Expr>& root);
@@ -61,29 +69,25 @@ void repl(){
         break;
     }
 
+    //lexing
 
     Scanner scanner(source);
 
     scanner.scanTokens();
 
-    
-
+    //parsing
     Parser p(scanner.tokens);
 
     p.parse();
 
-//    for(auto &s : p.program){
-//        std::cout << static_cast<int>(s->type) << "\n";
-//    }
-
+    //execution
     auto res = interpret(p.program);
     
-    if(res->type == ValueType::NUMBER){
-        std::cout << static_cast<NumberVal*>(res.get())->value << "\n";
-    }else if(res->type == ValueType::STRVAL){
-        std::cout << static_cast<StringValue*>(res.get())->value << "\n";
-    }
-   // std::unique_ptr<RuntimeVal> result = interpret(p.program);
+    // if(res->type == ValueType::NUMBER){
+    //     std::cout << static_cast<NumberVal*>(res.get())->value << "\n";
+    // }else if(res->type == ValueType::STRVAL){
+    //     std::cout << static_cast<StringValue*>(res.get())->value << "\n";
+    // }
 
     
    
