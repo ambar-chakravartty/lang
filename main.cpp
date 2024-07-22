@@ -60,9 +60,15 @@ void repl(){
 
     scanner.scanTokens();
 
+    
+
     Parser p(scanner.tokens);
 
     p.parse();
+
+//    for(auto &s : p.program){
+//        std::cout << static_cast<int>(s->type) << "\n";
+//    }
 
     auto res = interpret(p.program);
     
@@ -71,7 +77,7 @@ void repl(){
     }else if(res->type == ValueType::STRVAL){
         std::cout << static_cast<StringValue*>(res.get())->value << "\n";
     }
-    //std::unique_ptr<RuntimeVal> result = interpret(p.program);
+   // std::unique_ptr<RuntimeVal> result = interpret(p.program);
 
     
    

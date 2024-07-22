@@ -36,10 +36,44 @@ Token Parser::currToken() {
 // }
 void Parser::parse(){
     while(currToken().type != TokenType::END){
-        program.push_back(expression());
+        program.push_back(statement());
     }
 }
 
+
+std::unique_ptr<Stmt> Parser::statement(){
+    if(currToken().type == TokenType::PRINT){
+        eat();
+        return printStatement();
+    }
+
+    return exprStatement();
+}
+
+std::unique_ptr<Stmt> Parser::printStatement(){
+    auto e = expression();
+
+    if(currToken().type != TokenType::SEMICOLON){
+        std::cerr << "expected ';' \n";
+
+    }
+
+    eat(); //consume the semicolon
+    return std::make_unique<PrintStmt>(std::move(e));
+}
+
+std::unique_ptr<Stmt> Parser::exprStatement(){
+    auto e = expression();
+
+    if(currToken().type != TokenType::SEMICOLON){
+        std::cerr << "expected ';' \n";
+
+    }
+
+    eat(); //consume the semicolon
+
+    return std::make_unique<ExprStmt>(std::move(e));
+}
 
 std::unique_ptr<Expr> Parser::expression() {
     return term();
@@ -87,10 +121,13 @@ std::unique_ptr<Expr> Parser::literal() {
         return e;
 
     } else {
-        std::cerr << "unidentified character\n";
+        //std::cout << "unidentified character\n";
+        eat();
+        return std::make_unique<NullLiteral>();
     }
 
 
 }
+
 
 

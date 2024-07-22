@@ -12,7 +12,12 @@ enum class NodeType{
     IDENTIFIER,
     BINARY_EXP,
     NULL_LITERAL,
+    PRINT_STMT,
+    EXPR_STMT,
 };
+
+
+
 
 // struct Stmt{
 //     NodeType type;
@@ -77,6 +82,35 @@ public:
         : left(std::move(left)), op(op), right(std::move(right)) {
         type = NodeType::BINARY_EXP;
     }
+
+};
+
+
+
+class Stmt{
+    public:
+        NodeType type;
+
+        virtual ~Stmt() = default;
+};
+
+class PrintStmt : public Stmt{
+    public:
+        std::unique_ptr<Expr> expr;
+
+        PrintStmt(std::unique_ptr<Expr> expr) : expr(std::move(expr)){
+            type = NodeType::PRINT_STMT;
+        }
+
+};
+
+class ExprStmt : public Stmt{
+    public:
+        std::unique_ptr<Expr> expr;
+
+        ExprStmt(std::unique_ptr<Expr> expr) : expr(std::move(expr)){
+            type = NodeType::EXPR_STMT;
+        }
 
 };
 

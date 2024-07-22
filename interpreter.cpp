@@ -46,13 +46,21 @@ std::unique_ptr<RuntimeVal> evaluate(Expr* node){
     }
 }
 
+std::unique_ptr<RuntimeVal> evalStmt(Stmt* s){
+    switch (s->type) {
+        case NodeType::EXPR_STMT:
+            return evaluate(static_cast<ExprStmt*>(s)->expr);
+        
+    }
+}
 
-std::unique_ptr<RuntimeVal> interpret(std::vector<std::unique_ptr<Expr>>& program){
+
+std::unique_ptr<RuntimeVal> interpret(std::vector<std::unique_ptr<Stmt>>& program){
 
     std::unique_ptr<RuntimeVal> lastEvaluated ;
 
-    for(std::vector<std::unique_ptr<Expr>>::iterator i = program.begin(); i != program.end();++i){
-        lastEvaluated = evaluate(*i);
+    for(std::vector<std::unique_ptr<Stmt>>::iterator i = program.begin(); i != program.end();++i){
+        lastEvaluated = evalStmt(i->get());
     }
 
     return lastEvaluated;

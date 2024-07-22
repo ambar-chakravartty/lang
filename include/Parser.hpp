@@ -15,7 +15,7 @@ public:
 
     Parser(std::vector<Token> tokenList);
     void parse();
-    std::vector<std::unique_ptr<Expr>> program;
+    std::vector<std::unique_ptr<Stmt>> program;
     // void printExpr(Expr& e);
 
 private:
@@ -25,6 +25,10 @@ private:
     std::unique_ptr<Expr> term();
     std::unique_ptr<Expr> factor();
     std::unique_ptr<Expr> literal();
+    std::unique_ptr<Stmt> statement();
+    std::unique_ptr<Stmt> printStatement();
+    std::unique_ptr<Stmt> exprStatement();
+
 
     Token eat();
     Token currToken();
