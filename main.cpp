@@ -56,6 +56,12 @@ void repl(){
     std::cout << "> ";
     std::getline(std::cin,source);
 
+    if(source.compare("exit") == 0){
+        std::cout << "Bye\n";
+        break;
+    }
+
+
     Scanner scanner(source);
 
     scanner.scanTokens();
