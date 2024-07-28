@@ -15,6 +15,7 @@ enum class NodeType{
     PRINT_STMT,
     EXPR_STMT,
     DECL,
+    ASGN,
 
 };
 
@@ -87,6 +88,15 @@ public:
 
 };
 
+class Assignment : public Expr{
+    public:
+        std::string name;
+        std::unique_ptr<Expr> lhs;
+
+        Assignment(std::unique_ptr<Expr> lhs,std::string name) : lhs(std::move(lhs)) , name(name){
+            type = NodeType::ASGN;
+        }
+};
 
 class Identifier : public Expr{
     public:

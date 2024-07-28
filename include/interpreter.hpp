@@ -14,6 +14,7 @@ class Interpreter{
         std::unique_ptr<RuntimeVal> evaluate(std::unique_ptr<Expr>& e);
         std::unique_ptr<RuntimeVal> evalNumericBinary(NumberVal* lhs,std::string op,NumberVal* rhs);
         std::unique_ptr<RuntimeVal> evalBinary(BinaryExpr* b);
+	std::unique_ptr<RuntimeVal> assignment(Assignment* node);
         std::unique_ptr<RuntimeVal> evaluate(Expr* node);
         void printStmt(std::unique_ptr<RuntimeVal> res);
         std::unique_ptr<RuntimeVal> evalStmt(Stmt* s);

@@ -21,6 +21,7 @@ public:
 private:
     
     std::unique_ptr<Expr> expression();
+    std::unique_ptr<Expr> assignment();
     std::unique_ptr<Expr> binary();
     std::unique_ptr<Expr> term();
     std::unique_ptr<Expr> factor();

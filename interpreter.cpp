@@ -42,6 +42,15 @@ std::unique_ptr<RuntimeVal> Interpreter::varExpr(Identifier* node) {
     return env.get(name);
 }
 
+std::unique_ptr<RuntimeVal> Interpreter::assignment(Assignment* node){
+	std::string name = node->name;
+	auto val = evaluate(node->lhs);
+	
+	env.assign(name,std::move(val));
+
+	return std::make_unique<NumberVal> (0);
+
+}
 
 std::unique_ptr<RuntimeVal> Interpreter::evaluate(Expr* node){
     switch(node->type){
@@ -51,6 +60,8 @@ std::unique_ptr<RuntimeVal> Interpreter::evaluate(Expr* node){
             return std::make_unique<StringValue>(static_cast<StringLiteral*>(node)->value);
         case NodeType::BINARY_EXP:
             return evalBinary(static_cast<BinaryExpr*>(node));
+	case NodeType::ASGN:
+	    return assignment(static_cast<Assignment*>(node));
         case NodeType::IDENTIFIER:
             return varExpr(static_cast<Identifier*>(node));
     }

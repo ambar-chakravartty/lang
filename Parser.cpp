@@ -27,13 +27,6 @@ Token Parser::currToken() {
     return tokens.at(current);
 }
 
-// Program Parser::parse() {
-//     std::vector<Expr> expressions;
-//     while (currToken().type != TokenType::END) {
-//         expressions.push_back(expression());
-//     }
-//     return Program(expressions);
-// }
 void Parser::parse(){
     while(currToken().type != TokenType::END){
         program.push_back(declaration());
@@ -105,7 +98,18 @@ std::unique_ptr<Stmt> Parser::exprStatement(){
 }
 
 std::unique_ptr<Expr> Parser::expression() {
-    return factor();
+    return assignment();
+}
+
+std::unique_ptr<Expr> Parser::assignment(){
+   auto expr = factor();	
+     if(currToken().type == TokenType::EQUAL){
+         auto name = prev().value;
+	 eat(); //consume the '=' sign
+         auto value = assignment();
+	 expr =  std::make_unique<Assignment>(std::move(value),name);				 
+      } 
+    return expr;
 }
 
 std::unique_ptr<Expr> Parser::factor() {
