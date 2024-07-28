@@ -21,7 +21,7 @@ enum class TokenType{
 
   // Keywords.
   AND, ELSE, FALSE, FUN, FOR, IF, NIL, OR,
-  PRINT, RETURN,TRUE, VAR, WHILE,
+  PRINT, RETURN,TRUE, LET, WHILE,
 
   END
 };
@@ -39,7 +39,7 @@ class Scanner{
     int current;
     std::vector<Token> tokens;
     std::unordered_map<std::string, TokenType> keywords = {
-      {"var",TokenType::VAR},
+      {"let",TokenType::LET},
       {"if",TokenType::IF},
       {"else",TokenType::ELSE},
       {"while",TokenType::WHILE},

@@ -36,10 +36,39 @@ Token Parser::currToken() {
 // }
 void Parser::parse(){
     while(currToken().type != TokenType::END){
-        program.push_back(statement());
+        program.push_back(declaration());
     }
 }
 
+std::unique_ptr<Stmt> Parser::declaration(){
+    if(currToken().type == TokenType::LET){
+        eat();
+        return varDeclaration();
+    }else{
+        return statement();
+    }
+}
+
+std::unique_ptr<Stmt> Parser::varDeclaration(){
+
+    std::string name = eat().value;
+
+    std::unique_ptr<Expr> init = nullptr;
+
+    if(currToken().type == TokenType::EQUAL){
+        eat();
+        init = expression();
+    }
+
+    if(currToken().type != TokenType::SEMICOLON){
+        std::cerr << "Expected ';'\n";
+    }
+
+    eat(); // eat the semicolon
+
+    return std::make_unique<Declaration>(std::move(init),name);
+
+}
 
 std::unique_ptr<Stmt> Parser::statement(){
     if(currToken().type == TokenType::PRINT){
@@ -122,7 +151,9 @@ std::unique_ptr<Expr> Parser::literal() {
         eat();
         return e;
 
-    } else {
+    }else if(currToken().type == TokenType::IDENTIFIER){
+        return std::make_unique<Identifier>(eat().value);
+    }else{
         //std::cout << "unidentified character\n";
         eat();
         return std::make_unique<NullLiteral>();

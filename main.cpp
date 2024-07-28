@@ -12,7 +12,8 @@
 
 //TODO:
 //print statements -- done
-//variables (decl & assignments)
+//variables (decl & assignments) -- this
+//   -- declarations work (i think) can't resuse them yet, for some reason the values won't 
 //loops (while)
 //user defined functions
 //user defined types
@@ -59,6 +60,8 @@ void printType(std::unique_ptr<Expr>& root){
 }
 
 void repl(){
+  Interpreter i;
+
   while(1){
     std::string source;
     std::cout << "> ";
@@ -80,22 +83,16 @@ void repl(){
 
     p.parse();
 
-    //execution
-    auto res = interpret(p.program);
-    
-    // if(res->type == ValueType::NUMBER){
-    //     std::cout << static_cast<NumberVal*>(res.get())->value << "\n";
-    // }else if(res->type == ValueType::STRVAL){
-    //     std::cout << static_cast<StringValue*>(res.get())->value << "\n";
-    // }
-
-    
+    //Execution
+    auto res = i.interpret(p.program); 
    
   }
+
 }
 
 int main(int argc,char** argv){
   
   repl();
+  
   return 0;
 }

@@ -12,7 +12,7 @@ enum class ValueType {
 class RuntimeVal{
     public:
         ValueType type;
-
+        
         virtual ~RuntimeVal() = default; 
 
 };

@@ -14,6 +14,8 @@ enum class NodeType{
     NULL_LITERAL,
     PRINT_STMT,
     EXPR_STMT,
+    DECL,
+
 };
 
 
@@ -86,6 +88,15 @@ public:
 };
 
 
+class Identifier : public Expr{
+    public:
+        std::string name;
+
+        Identifier(std::string name) : name(name){
+            type = NodeType::IDENTIFIER;
+        }
+};
+
 
 class Stmt{
     public:
@@ -112,6 +123,16 @@ class ExprStmt : public Stmt{
             type = NodeType::EXPR_STMT;
         }
 
+};
+
+class Declaration : public Stmt{
+    public:
+        std::unique_ptr<Expr> lhs;
+        std::string name;
+
+        Declaration(std::unique_ptr<Expr> lhs,std::string name) : lhs(std::move(lhs)) , name(name){
+            type = NodeType::DECL;
+        }
 };
 
 class Visitor{
