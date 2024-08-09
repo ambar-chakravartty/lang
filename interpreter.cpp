@@ -107,7 +107,7 @@ std::unique_ptr<RuntimeVal> Interpreter::evalStmt(Stmt* s,Environment& e){
 
             return std::make_unique<NumberVal>(0); }
         case NodeType::BLOCK:{
-            Environment en;
+            Environment en(&e);
             return executeBlock(static_cast<Block*>(s),en);
 
         }

@@ -3,7 +3,6 @@
 #include <cstdarg>
 #include <iostream>
 #include <memory>
-#include <stdexcept>
 #include <utility>
 
 
@@ -65,7 +64,7 @@ std::unique_ptr<RuntimeVal> Environment::get(std::string name) {
 	    }
     }
 
-    std::cout << "Variable not defined\n";
+    //std::cout << "Variable not defined\n";
 }
 
 
