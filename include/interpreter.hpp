@@ -10,21 +10,21 @@
 
 class Interpreter{
     private:
-        Environment env;
-        std::unique_ptr<RuntimeVal> evaluate(std::unique_ptr<Expr>& e);
-        std::unique_ptr<RuntimeVal> evalNumericBinary(NumberVal* lhs,std::string op,NumberVal* rhs);
-        std::unique_ptr<RuntimeVal> evalBinary(BinaryExpr* b);
-	std::unique_ptr<RuntimeVal> assignment(Assignment* node);
-        std::unique_ptr<RuntimeVal> evaluate(Expr* node);
-        void printStmt(std::unique_ptr<RuntimeVal> res);
-        std::unique_ptr<RuntimeVal> evalStmt(Stmt* s);
-        std::unique_ptr<RuntimeVal> varExpr(Identifier* node);
+        std::unique_ptr<RuntimeVal> evaluate(std::unique_ptr<Expr>& e,Environment& env);
+        std::unique_ptr<RuntimeVal> evalNumericBinary(NumberVal* lhs,std::string op,NumberVal* rhs,Environment& e);
+        std::unique_ptr<RuntimeVal> evalBinary(BinaryExpr* b,Environment& e);
+	    std::unique_ptr<RuntimeVal> assignment(Assignment* node,Environment& e);
+        std::unique_ptr<RuntimeVal> evaluate(Expr* node,Environment& e);
+        void printStmt(std::unique_ptr<RuntimeVal> res,Environment& e);
+        std::unique_ptr<RuntimeVal> evalStmt(Stmt* s,Environment& e);
+        std::unique_ptr<RuntimeVal> varExpr(Identifier* node,Environment& e);
+        std::unique_ptr<RuntimeVal> executeBlock(Block* b,Environment& e);
 
 
 
     public:
     
-        std::unique_ptr<RuntimeVal> interpret(std::vector<std::unique_ptr<Stmt>>& program);
+        std::unique_ptr<RuntimeVal> interpret(std::vector<std::unique_ptr<Stmt>>& program,Environment& e);
 
         // Interpreter();
 

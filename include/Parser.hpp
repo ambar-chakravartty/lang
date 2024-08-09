@@ -31,6 +31,7 @@ private:
     std::unique_ptr<Stmt> exprStatement();
     std::unique_ptr<Stmt> declaration();
     std::unique_ptr<Stmt> varDeclaration();
+    std::vector<std::unique_ptr<Stmt>> block();
 
 
     Token eat();

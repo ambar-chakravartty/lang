@@ -16,18 +16,8 @@ enum class NodeType{
     EXPR_STMT,
     DECL,
     ASGN,
-
+    BLOCK,
 };
-
-
-
-
-// struct Stmt{
-//     NodeType type;
-
-// };
-
-class Visitor;
 
 class Expr {
 public:
@@ -145,12 +135,12 @@ class Declaration : public Stmt{
         }
 };
 
-class Visitor{
-    public:
-        virtual void visitNumericLiteral(NumericLiteral* node);
-        virtual void visitStringLiteral(StringLiteral* node);
-        virtual void visitBinaryExpression(BinaryExpr* node);
-
-        virtual ~Visitor() = default;
+class Block : public Stmt{
+	public:
+		std::vector<std::unique_ptr<Stmt>> statements;
+		Block(std::vector<std::unique_ptr<Stmt>> statements) : statements(std::move(statements)){
+            type = NodeType::BLOCK;
+        }	
 };
+
 #endif 

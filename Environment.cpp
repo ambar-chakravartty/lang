@@ -41,8 +41,12 @@ void Environment::assign(std::string name, std::unique_ptr<RuntimeVal> val) {
             }	break;
         }	
     } else {
-        	std::cout << "Variable doesn't exist\n";
+        	if(enclosing != nullptr){
+			enclosing->assign(name,std::move(val));
+		}
+	
     }
+
 }
 
 std::unique_ptr<RuntimeVal> Environment::get(std::string name) {
@@ -56,8 +60,12 @@ std::unique_ptr<RuntimeVal> Environment::get(std::string name) {
                 return std::make_unique<StringValue>(static_cast<StringValue*>(v)->value);
         }
     } else {
-        throw std::out_of_range("Key not found: " + name);
+	    if(enclosing != nullptr){
+		    return enclosing->get(name);
+	    }
     }
+
+    std::cout << "Variable not defined\n";
 }
 
 

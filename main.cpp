@@ -1,14 +1,13 @@
+#include <fstream>
 #include <iostream>
-#include <memory>
+#include <sstream>
 #include <string>
 #include <vector>
 
 #include "./include/Scanner.hpp"
 #include "./include/Parser.hpp"
-#include "./include/ast.hpp"
-
 #include "./include/interpreter.hpp"
-#include "include/Values.hpp"
+#include "include/Environment.hpp"
 
 //TODO:
 //print statements -- done
@@ -19,49 +18,10 @@
 //user defined types
 //basic standard library
 
-void printType(std::unique_ptr<Expr>& root);
-void printType(Expr* e);
-auto exec(std::unique_ptr<Expr>& root);
-auto exec(Expr* root);
-
-void printNum(NumericLiteral* n){
-    std::cout << n->value << "\n";
-}
-
-void printStrLit(StringLiteral* s){
-    std::cout << s->value << "\n";
-}
-
-void printBinary(BinaryExpr* b){
-     printType(b->left.get());            
-     std::cout << b->op << "\n";
-     printType(b->right.get());
-}
-
-void printType(Expr* e){
-    switch (e->type) {
-        case NodeType::NUM_LITERAL:
-            printNum(static_cast<NumericLiteral*>(e));           
-            break;  
-        case NodeType::STR_LITERAL:
-            printStrLit(static_cast<StringLiteral*>(e));
-            break;
-        case NodeType::BINARY_EXP:
-            printBinary(static_cast<BinaryExpr*>(e));           
-            break;
-        
-        default:
-            std::cerr << "Unknown expression type\n";
-    }
-}
-
-void printType(std::unique_ptr<Expr>& root){
-    printType(root.get());
-}
 
 void repl(){
   Interpreter i;
-
+  Environment e;
   while(1){
     std::string source;
     std::cout << "> ";
@@ -84,15 +44,54 @@ void repl(){
     p.parse();
 
     //Execution
-    auto res = i.interpret(p.program); 
+    auto res = i.interpret(p.program,e); 
    
   }
 
 }
 
+void runFile(char* filename){
+	std::ifstream file;
+	file.open(filename);
+
+  if(!file){
+    std::cerr << "Error opening source file\n";
+  }
+
+  std::stringstream buf;
+  buf << file.rdbuf();
+
+  auto src = buf.str();
+  Environment e;
+  Scanner s(src);
+
+  s.scanTokens();
+
+  Parser p(s.tokens);
+
+  p.parse();  
+
+
+  // some driver code for debugging the frontend
+  // for(std::vector<std::unique_ptr<Stmt>>::iterator i = p.program.begin(); i != p.program.end();++i){
+  //   std::cout << static_cast<int>(i->get()->type) << "\n";
+  // }
+
+  Interpreter i;
+
+  auto r = i.interpret(p.program,e);
+		
+}
+
 int main(int argc,char** argv){
   
-  repl();
+  if(argc == 1){
+	  repl();
+  }else if(argc == 2){
+	  runFile(argv[1]);
+  }else{
+	  std::cout << "Error!\n"; 
+  }
   
   return 0;
 }

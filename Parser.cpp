@@ -68,8 +68,28 @@ std::unique_ptr<Stmt> Parser::statement(){
         eat();
         return printStatement();
     }
+   if(currToken().type == TokenType::LEFT_BRACE){
+	eat(); // eat the '{'
+	return std::make_unique<Block>(block());
+   }
 
     return exprStatement();
+}
+
+std::vector<std::unique_ptr<Stmt>> Parser::block(){
+    std::vector<std::unique_ptr<Stmt>> list;
+
+    while(currToken().type != TokenType::RIGHT_BRACE && currToken().type != TokenType::END){
+        list.push_back(declaration());
+    }
+
+    if(currToken().type != TokenType::RIGHT_BRACE){
+        std::cout << "Expected '}' after end of block \n";
+    }
+
+    eat(); //consume the '}'
+
+    return list;
 }
 
 std::unique_ptr<Stmt> Parser::printStatement(){
