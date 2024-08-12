@@ -1,6 +1,7 @@
 #include "include/Parser.hpp"
 #include "include/Scanner.hpp"
 #include "include/ast.hpp"
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <vector>
@@ -73,8 +74,63 @@ std::unique_ptr<Stmt> Parser::statement(){
 	return std::make_unique<Block>(block());
    }
 
+   if(currToken().type == TokenType::IF){
+    eat();
+    return ifStatement();
+   }
+
+   if(currToken().type == TokenType::WHILE){
+    eat();
+    return WhileStatement();
+   }
+
     return exprStatement();
 }
+
+std::unique_ptr<Stmt> Parser::ifStatement(){
+    //process the condition
+    if(currToken().type != TokenType::LEFT_PAREN){
+        std::cout << "Expect '(' after if token\n";
+    }
+    eat(); // consume the '('
+    auto condition = expression();
+
+    if (currToken().type != TokenType::RIGHT_PAREN) {
+        std::cout << "Expect closing ')'\n";
+    }
+    eat(); //consume the closing paren
+
+    auto truthy = statement();
+    std::unique_ptr<Stmt> elseB = nullptr;
+
+    if(currToken().type == TokenType::ELSE){
+        eat();
+        elseB = statement();
+    }
+
+    return std::make_unique<IfStmt>(std::move(condition),std::move(truthy),std::move(elseB));
+
+} 
+
+std::unique_ptr<Stmt> Parser::WhileStatement(){
+    //process the condition
+    if(currToken().type != TokenType::LEFT_PAREN){
+        std::cout << "Expect '(' after if token\n";
+    }
+    eat(); // consume the '('
+    auto condition = expression();
+
+    if (currToken().type != TokenType::RIGHT_PAREN) {
+        std::cout << "Expect closing ')'\n";
+    }
+    eat(); //consume the closing paren
+
+    auto code = statement();
+   
+
+    return std::make_unique<WhileStmt>(std::move(condition),std::move(code));
+
+} 
 
 std::vector<std::unique_ptr<Stmt>> Parser::block(){
     std::vector<std::unique_ptr<Stmt>> list;
@@ -122,7 +178,7 @@ std::unique_ptr<Expr> Parser::expression() {
 }
 
 std::unique_ptr<Expr> Parser::assignment(){
-   auto expr = factor();	
+   auto expr = equality();	
      if(currToken().type == TokenType::EQUAL){
          auto name = prev().value;
 	 eat(); //consume the '=' sign
@@ -130,6 +186,28 @@ std::unique_ptr<Expr> Parser::assignment(){
 	 expr =  std::make_unique<Assignment>(std::move(value),name);				 
       } 
     return expr;
+}
+
+std::unique_ptr<Expr> Parser::equality(){
+    auto left = comparision();
+    while(currToken().type == TokenType::EQUAL_EQUAL){
+        std::string op = eat().value;
+        auto right = comparision();
+        left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
+    }
+
+    return left;
+}
+
+std::unique_ptr<Expr> Parser::comparision(){
+    auto left = factor();
+    while(currToken().type == TokenType::GREATER_EQUAL || currToken().type == TokenType::GREATER || currToken().type == TokenType::LESS || currToken().type == TokenType::LESS_EQUAL){
+        std::string op = eat().value;
+        auto right = factor();
+        left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
+    }
+
+    return left;
 }
 
 std::unique_ptr<Expr> Parser::factor() {

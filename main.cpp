@@ -11,9 +11,9 @@
 
 //TODO:
 //print statements -- done
-//variables (decl & assignments) -- this
-//   -- declarations work (i think) can't resuse them yet, for some reason the values won't 
-//loops (while)
+//variables (decl & assignments) -- done
+//conditions -- done
+//loops (while) -- done
 //user defined functions
 //user defined types
 //basic standard library

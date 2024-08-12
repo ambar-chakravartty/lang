@@ -17,6 +17,8 @@ enum class NodeType{
     DECL,
     ASGN,
     BLOCK,
+    IF_STMT,
+    WHILE_STMT,
 };
 
 class Expr {
@@ -143,4 +145,26 @@ class Block : public Stmt{
         }	
 };
 
+
+class IfStmt : public Stmt{
+  public:
+    std::unique_ptr<Expr> condition;
+    std::unique_ptr<Stmt> ifB;
+    std::unique_ptr<Stmt> elseB;
+
+    IfStmt(std::unique_ptr<Expr> condition,std::unique_ptr<Stmt> ifB,std::unique_ptr<Stmt> elseB) : condition(std::move(condition)), ifB(std::move(ifB)), elseB(std::move(elseB)) {
+        type = NodeType::IF_STMT;
+    }  
+};
+
+class WhileStmt : public Stmt{
+  public:
+    std::unique_ptr<Expr> condition;
+    std::unique_ptr<Stmt> code;
+    
+
+    WhileStmt(std::unique_ptr<Expr> condition,std::unique_ptr<Stmt> code) : condition(std::move(condition)), code(std::move(code)){
+        type = NodeType::WHILE_STMT;
+    }  
+};
 #endif 

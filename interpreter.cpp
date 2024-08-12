@@ -23,6 +23,24 @@ std::unique_ptr<RuntimeVal> Interpreter::evalNumericBinary(NumberVal* lhs,std::s
     if(op == "-") result = lhs->value - rhs->value;
     if(op == "/") result = lhs->value / rhs->value;
     if(op == "*") result = lhs->value * rhs->value;
+    
+    if(op == ">"){
+        lhs->value > rhs->value ? result = 1 : result = 0;
+    }
+
+    if(op == "<"){
+        lhs->value < rhs->value ? result = 1 : result = 0;
+    }
+
+     if(op == ">="){
+        lhs->value >= rhs->value ? result = 1 : result = 0;
+    }
+     if(op == "<="){
+        lhs->value <= rhs->value ? result = 1 : result = 0;
+    }
+     if(op == "=="){
+        lhs->value == rhs->value ? result = 1 : result = 0;
+    }
 
     return std::make_unique<NumberVal>(result);
     
@@ -90,6 +108,10 @@ void Interpreter::printStmt(std::unique_ptr<RuntimeVal> res,Environment& e){
     }
 }
 
+bool Interpreter::isTruthy(RuntimeVal* val){
+    return static_cast<NumberVal*>(val)->value == 1;
+}
+
 std::unique_ptr<RuntimeVal> Interpreter::evalStmt(Stmt* s,Environment& e){
     switch (s->type) {
         case NodeType::EXPR_STMT:
@@ -111,8 +133,20 @@ std::unique_ptr<RuntimeVal> Interpreter::evalStmt(Stmt* s,Environment& e){
             return executeBlock(static_cast<Block*>(s),en);
 
         }
-        }
-
+        case NodeType::IF_STMT:{
+            auto cond = evaluate(static_cast<IfStmt*>(s)->condition,e);
+            if(isTruthy(cond.get())){
+                evalStmt(static_cast<IfStmt*>(s)->ifB.get(),e);
+            }else if(static_cast<IfStmt*>(s)->elseB != nullptr){
+                evalStmt(static_cast<IfStmt*>(s)->elseB.get(),e);
+            }
+        }break;
+        case NodeType::WHILE_STMT:{
+            while(isTruthy(evaluate(static_cast<WhileStmt*>(s)->condition,e).get())){
+                evalStmt(static_cast<IfStmt*>(s)->ifB.get(),e);
+            }
+        }break;
+    }
     return nullptr;
 }
 

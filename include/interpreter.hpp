@@ -19,6 +19,7 @@ class Interpreter{
         std::unique_ptr<RuntimeVal> evalStmt(Stmt* s,Environment& e);
         std::unique_ptr<RuntimeVal> varExpr(Identifier* node,Environment& e);
         std::unique_ptr<RuntimeVal> executeBlock(Block* b,Environment& e);
+        bool isTruthy(RuntimeVal* val);
 
 
 

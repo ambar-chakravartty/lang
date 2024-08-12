@@ -23,6 +23,8 @@ private:
     std::unique_ptr<Expr> expression();
     std::unique_ptr<Expr> assignment();
     std::unique_ptr<Expr> binary();
+    std::unique_ptr<Expr> equality();
+    std::unique_ptr<Expr> comparision();
     std::unique_ptr<Expr> term();
     std::unique_ptr<Expr> factor();
     std::unique_ptr<Expr> literal();
@@ -32,6 +34,9 @@ private:
     std::unique_ptr<Stmt> declaration();
     std::unique_ptr<Stmt> varDeclaration();
     std::vector<std::unique_ptr<Stmt>> block();
+    std::unique_ptr<Stmt> ifStatement();
+    std::unique_ptr<Stmt> WhileStatement();
+
 
 
     Token eat();

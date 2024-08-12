@@ -76,6 +76,8 @@ void Scanner::scanToken() {
         case '{': tokens.push_back(Token(TokenType::LEFT_BRACE, "{")); break;
         case '}': tokens.push_back(Token(TokenType::RIGHT_BRACE, "}")); break;
         case ';': tokens.push_back(Token(TokenType::SEMICOLON, ";")); break;
+        case '>': tokens.push_back(match('=') ? Token(TokenType::GREATER_EQUAL, ">=") : Token(TokenType::GREATER, ">")); break;
+        case '<': tokens.push_back(match('=') ? Token(TokenType::LESS_EQUAL, "<=") : Token(TokenType::LESS, "<")); break;
         case '!': tokens.push_back(match('=') ? Token(TokenType::BANG_EQUAL, "!=") : Token(TokenType::BANG, "!")); break;
         case '=': tokens.push_back(match('=') ? Token(TokenType::EQUAL_EQUAL, "==") : Token(TokenType::EQUAL, "=")); break;
         case ' ': case '\r': case '\t': case '\n': break; // Ignore whitespace
