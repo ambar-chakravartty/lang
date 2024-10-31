@@ -82,13 +82,14 @@ void Scanner::scanToken() {
         case '=': tokens.push_back(match('=') ? Token(TokenType::EQUAL_EQUAL, "==") : Token(TokenType::EQUAL, "=")); break;
         case ' ': case '\r': case '\t': case '\n': break; // Ignore whitespace
         case '"': string(); break;
+        case ',': tokens.push_back(Token(TokenType::COMMA, ",")); break;
         default:
             if (std::isdigit(c)) {
                 number();
             } else if (std::isalpha(c)) {
                 identifier();
             } else {
-                std::cerr << "Unexpected character\n";
+                std::cerr << "Unexpected character\n" << c << "\n";
             }
     }
 }

@@ -50,7 +50,8 @@ class Scanner{
       {"false",TokenType::FALSE},
       {"fun",TokenType::FUN},
       {"nil",TokenType::NIL},
-      {"print",TokenType::PRINT}
+      {"print",TokenType::PRINT},
+      {"return",TokenType::RETURN}
     };
     std::string source;
 

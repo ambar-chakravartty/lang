@@ -36,12 +36,20 @@ private:
     std::vector<std::unique_ptr<Stmt>> block();
     std::unique_ptr<Stmt> ifStatement();
     std::unique_ptr<Stmt> WhileStatement();
-
+    std::unique_ptr<Expr> Call();
+    std::unique_ptr<Expr> finishCall(std::unique_ptr<Expr> e);
+    std::unique_ptr<Stmt> function();
+    std::unique_ptr<Stmt> returnStatement();
 
 
     Token eat();
     Token currToken();
     Token prev();
+
+    bool match(TokenType t);
+    bool check(TokenType t);
+
+    Token consume(TokenType t,std::string err);
 
 
 };

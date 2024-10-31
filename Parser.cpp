@@ -28,6 +28,26 @@ Token Parser::currToken() {
     return tokens.at(current);
 }
 
+bool Parser::match(TokenType t){
+    if(currToken().type == t){
+        eat();
+        return true;
+    }
+
+    return false;
+}
+
+bool Parser::check(TokenType t){
+    return currToken().type == t;
+} 
+
+Token Parser::consume(TokenType t,std::string err){
+   if(check(t)) 
+        return eat();
+   else 
+        std::cout << err << "\n";
+}
+
 void Parser::parse(){
     while(currToken().type != TokenType::END){
         program.push_back(declaration());
@@ -84,7 +104,46 @@ std::unique_ptr<Stmt> Parser::statement(){
     return WhileStatement();
    }
 
+   if(match(TokenType::FUN)){
+    return function();
+   }
+
+   if(match(TokenType::RETURN)){
+    return returnStatement();
+   }
+
     return exprStatement();
+}
+
+std::unique_ptr<Stmt> Parser::returnStatement(){
+    std::unique_ptr<Expr> e = nullptr;
+
+    if(!check(TokenType::SEMICOLON)){
+        e = expression();
+    }
+
+    consume(TokenType::SEMICOLON,"Expect ';' after return value");
+    return std::make_unique<ReturnStmt>(std::move(e));
+}
+
+std::unique_ptr<Stmt> Parser::function(){
+    std::string name = eat().value;
+
+    consume(TokenType::LEFT_PAREN,"Expect '(' after function name");
+    std::vector<Token> params;
+    if(!check(TokenType::RIGHT_PAREN)){
+        do{
+            params.push_back(consume(TokenType::IDENTIFIER,"Expect parameter name"));
+        }while(match(TokenType::COMMA));
+    }
+
+    consume(TokenType::RIGHT_PAREN, "Expect ')' after arguments");
+
+    consume(TokenType::LEFT_BRACE,"Expect '{' before function body");
+
+    auto body  = std::make_unique<Block>(block());
+
+    return std::make_unique<FunDecl>(name,std::move(params),std::move(body));
 }
 
 std::unique_ptr<Stmt> Parser::ifStatement(){
@@ -152,7 +211,7 @@ std::unique_ptr<Stmt> Parser::printStatement(){
     auto e = expression();
 
     if(currToken().type != TokenType::SEMICOLON){
-        std::cerr << "expected ';' \n";
+        std::cerr << "expected ';' after print statements \n";
 
     }
 
@@ -164,7 +223,7 @@ std::unique_ptr<Stmt> Parser::exprStatement(){
     auto e = expression();
 
     if(currToken().type != TokenType::SEMICOLON){
-        std::cerr << "expected ';' \n";
+        std::cerr << "expected ';' after expression\n";
 
     }
 
@@ -221,15 +280,44 @@ std::unique_ptr<Expr> Parser::factor() {
 }
 
 std::unique_ptr<Expr> Parser::term() {
-    auto left = literal();
+    auto left = Call();
     while (currToken().type == TokenType::STAR || currToken().type == TokenType::SLASH) {
         std::string op = eat().value;
-        auto right = literal();
+        auto right = Call();
         left = std::make_unique<BinaryExpr>(std::move(left),op,std::move(right));
     }
     return left;
 }
 
+std::unique_ptr<Expr> Parser::Call(){
+    auto expr = literal();
+
+    while(true){
+        if(match(TokenType::LEFT_PAREN)){
+            expr = finishCall(std::move(expr));
+        }else{
+            break;
+        }
+    }
+
+    return expr;
+}
+
+std::unique_ptr<Expr> Parser::finishCall(std::unique_ptr<Expr> e){
+    std::vector<std::unique_ptr<Expr>> args;
+
+    if(!check(TokenType::RIGHT_PAREN)){
+        do{
+            if(args.size() >= 255)
+                std::cerr << "Can't have more than 255 arguments \n";
+            args.push_back(expression());
+        }while(match(TokenType::COMMA));
+    }
+
+    consume(TokenType::RIGHT_PAREN,"Expected ')' ");
+
+    return std::make_unique<CallExpr>(std::move(e),std::move(args));
+}
 
 
 std::unique_ptr<Expr> Parser::literal() {

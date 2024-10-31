@@ -8,20 +8,17 @@
 #include "./include/Parser.hpp"
 #include "./include/interpreter.hpp"
 #include "include/Environment.hpp"
+#include "include/ASTPrettyPrinter.hpp"
 
-//TODO:
-//print statements -- done
-//variables (decl & assignments) -- done
-//conditions -- done
-//loops (while) -- done
-//user defined functions
-//user defined types
-//basic standard library
+/**
+ * RECURSIVE FUNCTIONS DO NOT FUCKING WORK
+ * IDK Y, IM PROPAGATING THE RETURN VALUE PROPERLY, ITS PROBABLY AN Environment ISSUE BECAUSE NOTHING INSIDE A BLOCK IN IN A FUNCTION WILL EXECUTE
+ **/
 
 
 void repl(){
   Interpreter i;
-  Environment e;
+  Environment* e = new Environment;
   while(1){
     std::string source;
     std::cout << "> ";
@@ -48,6 +45,8 @@ void repl(){
    
   }
 
+  delete e;
+
 }
 
 void runFile(char* filename){
@@ -62,24 +61,25 @@ void runFile(char* filename){
   buf << file.rdbuf();
 
   auto src = buf.str();
-  Environment e;
-  Scanner s(src);
+  Environment* e = new Environment;
+  auto s = new Scanner(src);
 
-  s.scanTokens();
+  s->scanTokens();
 
-  Parser p(s.tokens);
+  Parser p(s->tokens);
 
   p.parse();  
 
-
-  // some driver code for debugging the frontend
-  // for(std::vector<std::unique_ptr<Stmt>>::iterator i = p.program.begin(); i != p.program.end();++i){
-  //   std::cout << static_cast<int>(i->get()->type) << "\n";
-  // }
-
   Interpreter i;
 
+  i.globals = e;
+
   auto r = i.interpret(p.program,e);
+
+  // ASTPrettyPrinter a;
+  // a.print(p.program);
+  delete s;
+  delete e;
 		
 }
 

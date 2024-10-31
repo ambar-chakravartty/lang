@@ -1,16 +1,18 @@
 #ifndef ENVIRONMENT_HPP
 #define ENVIRONMENT_HPP
 
-#include "Values.hpp"
-#include <memory>
+
 #include <map>
+#include <any>
+#include <string>
+
 class Environment{
 public:
 	Environment* enclosing;
-	std::map<std::string,std::unique_ptr<RuntimeVal>> values;
-        void define(std::string name,std::unique_ptr<RuntimeVal> val);
-        void assign(std::string name,std::unique_ptr<RuntimeVal> val);
-        std::unique_ptr<RuntimeVal> get(std::string name);
+	std::map<std::string,std::any> values;
+        void define(const std::string& name,const std::any& val);
+        void assign(const std::string& name,const std::any& val);
+        std::any get(const std::string& name);
 
 	Environment(){
 		this->enclosing = nullptr;

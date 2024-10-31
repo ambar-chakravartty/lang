@@ -1,31 +1,39 @@
 #ifndef INTERPRETER_HPP
 #define INTERPRETER_HPP
 
-#include "Values.hpp"
+
 #include "ast.hpp"
+#include <any>
 #include <memory>
+#include <stdexcept>
 #include <vector>
 #include "Environment.hpp"
 
 
 class Interpreter{
     private:
-        std::unique_ptr<RuntimeVal> evaluate(std::unique_ptr<Expr>& e,Environment& env);
-        std::unique_ptr<RuntimeVal> evalNumericBinary(NumberVal* lhs,std::string op,NumberVal* rhs,Environment& e);
-        std::unique_ptr<RuntimeVal> evalBinary(BinaryExpr* b,Environment& e);
-	    std::unique_ptr<RuntimeVal> assignment(Assignment* node,Environment& e);
-        std::unique_ptr<RuntimeVal> evaluate(Expr* node,Environment& e);
-        void printStmt(std::unique_ptr<RuntimeVal> res,Environment& e);
-        std::unique_ptr<RuntimeVal> evalStmt(Stmt* s,Environment& e);
-        std::unique_ptr<RuntimeVal> varExpr(Identifier* node,Environment& e);
-        std::unique_ptr<RuntimeVal> executeBlock(Block* b,Environment& e);
-        bool isTruthy(RuntimeVal* val);
+        std::any evaluate(std::unique_ptr<Expr>& e,Environment* env);
+        std::any evalBinary(BinaryExpr* b,Environment* e);
+	    std::any assignment(Assignment* node,Environment* e);
+        std::any evaluate(Expr* node,Environment* e);
+        void printStmt(std::any res,Environment* e);
+        std::any evalStmt(Stmt* s,Environment* e);
+        std::any varExpr(Identifier* node,Environment* e);
+        std::any executeBlock(Block* b,Environment* e);
+        std::any funDeclaration(FunDecl* d,Environment* e);
+	std::any evalIf(IfStmt* s,Environment* e);
+        std::any call(CallExpr* c,Environment* e);
+        std::any returnCall(ReturnStmt* s,Environment* e);
+
+        bool isTruthy(const std::any& val);
 
 
 
     public:
+
+        Environment* globals = nullptr;
     
-        std::unique_ptr<RuntimeVal> interpret(std::vector<std::unique_ptr<Stmt>>& program,Environment& e);
+        std::any interpret(std::vector<std::unique_ptr<Stmt>>& program,Environment* e);
 
         // Interpreter();
 
@@ -33,5 +41,10 @@ class Interpreter{
 
 };
 
+class ReturnException : public std::runtime_error {
+public:
+    const std::any value;
+    explicit ReturnException(std::any value);
+};
 
 #endif

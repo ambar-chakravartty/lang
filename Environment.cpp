@@ -1,44 +1,25 @@
 #include "include/Environment.hpp"
-#include "include/Values.hpp"
 #include <cstdarg>
 #include <iostream>
-#include <memory>
 #include <utility>
 
 
-void Environment::define(std::string name, std::unique_ptr<RuntimeVal> val) {
+void Environment::define(const std::string& name, const std::any& val) {
+
+   
+
     auto it = values.find(name);
     if (it != values.end()) {
        std::cout << "Variable already exists\n" ;
     } else {
-        switch(val->type){
-            case ValueType::NUMBER:{
-                auto v = static_cast<NumberVal*>(val.get());
-                values[name] = std::make_unique<NumberVal>(v->value); 
-                }
-                break;
-            case ValueType::STRVAL:{
-                auto s = *static_cast<StringValue*>(val.get());
-                values[name] = std::make_unique<StringValue>(s.value);
-            }	break;
-        }		
+        values[name] = val;
     }
 }
 
-void Environment::assign(std::string name, std::unique_ptr<RuntimeVal> val) {
+void Environment::assign(const std::string& name, const std::any& val) {
     auto it = values.find(name);
     if (it != values.end()) {
-       switch(val->type){
-            case ValueType::NUMBER:{
-                auto v = static_cast<NumberVal*>(val.get());
-                values[name] = std::make_unique<NumberVal>(v->value); 
-                }
-                break;
-            case ValueType::STRVAL:{
-                auto s = *static_cast<StringValue*>(val.get());
-                values[name] = std::make_unique<StringValue>(s.value);
-            }	break;
-        }	
+       values[name] = val;
     } else {
         	if(enclosing != nullptr){
 			enclosing->assign(name,std::move(val));
@@ -48,23 +29,19 @@ void Environment::assign(std::string name, std::unique_ptr<RuntimeVal> val) {
 
 }
 
-std::unique_ptr<RuntimeVal> Environment::get(std::string name) {
+
+
+std::any Environment::get(const std::string& name) {
     auto it = values.find(name);
     if (it != values.end()) {
-       auto v = it->second.get();
-        switch(v->type){
-            case ValueType::NUMBER:
-                return std::make_unique<NumberVal>(static_cast<NumberVal*>(v)->value);
-            case ValueType::STRVAL:
-                return std::make_unique<StringValue>(static_cast<StringValue*>(v)->value);
-        }
+        // Return the value if found
+        return it->second;
+    } else if (enclosing != nullptr) {
+        // Check the parent environment
+        return enclosing->get(name);
     } else {
-	    if(enclosing != nullptr){
-		    return enclosing->get(name);
-	    }
+        // Handle the case where the variable is not found
+        std::cerr << "Error: Undefined variable '" << name << "'." << std::endl;
+        exit(1);
     }
-
-    //std::cout << "Variable not defined\n";
 }
-
-
