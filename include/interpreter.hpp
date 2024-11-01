@@ -31,7 +31,8 @@ class Interpreter{
 
     public:
 
-        Environment* globals = nullptr;
+        Environment* globals = new Environment();
+        Environment* env = globals;
     
         std::any interpret(std::vector<std::unique_ptr<Stmt>>& program,Environment* e);
 

@@ -1,6 +1,13 @@
-let a = 0;
-
-while(a < 5){
-	print a;
-        a = a + 1;
+fun count(n) {
+  if (n > 1) count(n - 1);
+  print n;
 }
+
+fun factorial(n){
+   if (n == 0) return 1;
+   return n*factorial(n-1);
+}
+
+print(factorial(5));
+
+count(3);

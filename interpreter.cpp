@@ -88,79 +88,63 @@ std::any Interpreter::executeBlock(Block* b,Environment* e){
 }
 
 std::any Interpreter::returnCall(ReturnStmt* s, Environment* e) {
-    std::cout << "throw 0 \n";
     std::any value = nullptr;
     if (s->expr != nullptr) {
         value = evaluate(s->expr, e);  // Evaluate the return value
     }
-    std::cout << "throw\n";
+
     throw ReturnException(value);
 }
 
-std::any Interpreter::call(CallExpr* c,Environment* e){
+
+std::any Interpreter::call(CallExpr* c, Environment* e) {
+    // Get the raw pointer of the Function object stored in the environment.
     auto callee = c->callee.get();
 
-    if(callee->type != NodeType::IDENTIFIER){
-        std::cerr << "Invalid callee\n";
-        exit(EXIT_FAILURE);
+    if (callee->type != NodeType::IDENTIFIER) {
+        std::cerr << "Error: callee is not an Identifier." << std::endl;
+        exit(1);
+    }
+    auto name = static_cast<Identifier*>(c->callee.get())->name;
+
+    // Retrieve the function declaration from the environment.
+    auto decl = std::any_cast<Function>(e->get(name));
+
+    // Check if the number of arguments matches the function's parameter list.
+    if (c->args.size() != decl.params.size()) {
+        std::cout << c->args.size() << "\n";
+        std::cout << decl.params.size() << "\n";
+        std::cerr << "Error: Argument count mismatch for function '" << name << "'." << std::endl;
+        exit(1);
     }
 
-    auto name = static_cast<Identifier*>(callee)->name;
+    // Create a new environment for the function call, with the current environment as its parent.
+    auto en = new Environment(globals);  // New scope for the function call
+
+    // Bind each parameter to its corresponding argument in the new environment.
+    for (size_t i = 0; i < decl.params.size(); ++i) {
+        en->define(decl.params[i].value, evaluate(c->args[i], e));  // Evaluate arguments and bind to parameters
+    }
+
+    // Check if the function body is valid.
+    if (decl.body == nullptr) {
+        std::cerr << "Error: Function body has been invalidated." << std::endl;
+        delete en;
+        exit(1);
+    }
 
     
+    try {
+        executeBlock(decl.body.get(), en);  
+    } catch (ReturnException& r) {
+        return r.value; 
+    }
+
+    // Clean up the environment after execution.
+    delete en;
+
+    return nullptr;  // If no return statement is encountered, return nullptr (or default "nil")
 }
-
-
-// std::any Interpreter::call(CallExpr* c, Environment* e) {
-//     // Get the raw pointer of the Function object stored in the environment.
-//     auto callee = c->callee.get();
-
-//     if (callee->type != NodeType::IDENTIFIER) {
-//         std::cerr << "Error: callee is not an Identifier." << std::endl;
-//         exit(1);
-//     }
-//     auto name = static_cast<Identifier*>(c->callee.get())->name;
-
-//     // Retrieve the function declaration from the environment.
-//     auto decl = std::any_cast<Function>(e->get(name));
-
-//     // Check if the number of arguments matches the function's parameter list.
-//     if (c->args.size() != decl.params.size()) {
-//         std::cout << c->args.size() << "\n";
-//         std::cout << decl.params.size() << "\n";
-//         std::cerr << "Error: Argument count mismatch for function '" << name << "'." << std::endl;
-//         exit(1);
-//     }
-
-//     // Create a new environment for the function call, with the current environment as its parent.
-//     auto en = new Environment(e);  // New scope for the function call
-
-//     // Bind each parameter to its corresponding argument in the new environment.
-//     for (size_t i = 0; i < decl.params.size(); ++i) {
-//         en->define(decl.params[i].value, evaluate(c->args[i], e));  // Evaluate arguments and bind to parameters
-//     }
-
-//     // Check if the function body is valid.
-//     if (decl.body == nullptr) {
-//         std::cerr << "Error: Function body has been invalidated." << std::endl;
-//         delete en;
-//         exit(1);
-//     }
-
-//     // Execute the function body in the new environment.
-//     try {
-//         executeBlock(decl.body.get(), en);  // Run the function body
-//     } catch (ReturnException& r) {
-//         std::cout << "cau\n";
-//         delete en;  // Clean up the environment
-//         return r.value;  // Return the value caught in the exception
-//     }
-
-//     // Clean up the environment after execution.
-//     // delete en;
-
-//     return nullptr;  // If no return statement is encountered, return nullptr (or default "nil")
-// }
 
 std::any Interpreter::evaluate(Expr* node,Environment* e){
     switch(node->type){
