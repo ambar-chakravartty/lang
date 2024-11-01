@@ -10,10 +10,7 @@
 #include "include/Environment.hpp"
 #include "include/ASTPrettyPrinter.hpp"
 
-/**
- * RECURSIVE FUNCTIONS DO NOT FUCKING WORK
- * IDK Y, IM PROPAGATING THE RETURN VALUE PROPERLY, ITS PROBABLY AN Environment ISSUE BECAUSE NOTHING INSIDE A BLOCK IN IN A FUNCTION WILL EXECUTE
- **/
+
 
 
 void repl(){
