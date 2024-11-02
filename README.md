@@ -1,6 +1,6 @@
 # Strut - A Simple Scripting Language
 
-Strut is a tree-walk interpreter for a dynamically typed imperative programming language, it derives heavily from Robert Nystrom's Crafting Interpreters. Strut doesn't have any OOP support built in (yet)
+Strut is a tree-walk interpreter for a dynamically typed imperative programming language, it derives heavily from Robert Nystrom's [Crafting Interpreters](https://craftinginterpreters.com). Strut doesn't have any OOP support built in (yet)
 
 ## Variables
 
@@ -11,7 +11,11 @@ print a;
 
 ## Loops
 
-`while(condition){.....}`
+```
+while(condition){
+     block
+}
+```
 
 ## Conditionals
 
@@ -21,7 +25,6 @@ if(condition){
 }else {
      block
 }
-
 ```
 
 ## Functions
